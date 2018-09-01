@@ -4,12 +4,13 @@
   "description": "Test in node & vue",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "Rhys Sharratt",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.2",
+    "express": "^4.16.3",
     "socket.io": "^2.1.1"
   }
 }
