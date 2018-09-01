@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" class="has-navbar-fixed-bottom">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css">
+    <!-- <link rel="stylesheet" href="app.css" type="text/css"> -->
+    <title>Chat App</title>
+</head>
+<body>
+    <div class="app">
+        <div class="navbar is-dark" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item">Chat App</a>
+                <a class="navbar-item">Create Account</a>
+                <a class="navbar-item">Sign In</a>
+                <a class="navbar-item">About</a>
+            </div>
+        </div>
+        <div class="panel">
+            <p class="panel-heading">
+                Welcome To Chat
+            </p>
+            <p class="panel-block">
+                Use this app to chat to a global room of people!
+            </p>
+            <p class="panel-block text-center" style="text-align: center; width: 100%">But first lets make a username</p>
+            <div class="panel-block">
+                <form @submit.prevent="joined" style="width: 100%">
+                    <input class="input" type="text" v-model="user" placeholder="Enter Username Here">
+                </form>
+            </div>
+            <div class="panel-block">
+                <p><h1>Global Chat </h1></Global><span v-show="is_typing"> - <i>{{ current_typing_user }} is typing...</i></span></p>
+            </div>
+            <div class="panel-block" style="max-height: 57vh; overflow-y: scroll">
+                <ul>
+                    <li v-for="message in messages">
+                        <small><i>{{ message.author }}</i> -</small><strong> {{ message.message }}</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div v-show="user_set" class="navbar is-info is-fixed-bottom" role="navigation" aria-label="second navigation">
+            <div class="navbar-brand" style="display: inline-flex; justify-content: center; align-items: center; text-align: center; width: 100vw">
+                <form @submit.prevent="send">
+                    <input class="navbar-item" type="text" v-model="message" placeholder="Type message here..." style="width: 80vw; margin: 0 auto">
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script>
+        var socket = io();
+        const app = new Vue({
+            el: '.app',
+            data: {
+                user: null,
+                messages: [],
+                user_set: false,
+                message: null,
+                current_user: null,
+                is_typing: false,
+                current_typing_user: null
+            },
+            watch: {
+                message(value) {
+                    value ? socket.emit('typing', this.current_user) : socket.emit('stopTyping');
+                }
+            },
+            methods: {
+                joined() {
+                    this.messages.push({message: "I've just joined!", author: this.user});
+                    socket.emit('joined', {message: "I've just joined!", author: this.user});
+                    this.current_user = this.user;
+                    this.user = null;
+                    this.user_set = true;
+                },
+                send() {
+                    if (this.message == '' || this.message == null) {
+
+                    } else {
+                        this.messages.push({message: this.message, author: this.current_user});
+                        socket.emit('new-message', {message: this.message, author: this.current_user});
+                        this.message = null;
+                    }
+                }
+            },
+            created() {
+                window.onbeforeunload = () => {
+                    socket.emit('disconnected', {message: " Left", author: this.current_user});
+                };
+
+                socket.on('Created', (data) => {
+                    console.info(data);
+                });
+                socket.on('joined', (data) => {
+                    this.messages.push({message: data.message, author: data.author});
+                });
+                socket.on('new-message', (data) => {
+                    this.messages.push({message: data.message, author: data.author});
+                });
+                socket.on('typing', (data) => {
+                    this.is_typing = true;
+                    this.current_typing_user = data;
+                });
+                socket.on('stopTyping', () => {
+                    this.is_typing = false;
+                    this.current_typing_user = null;
+                });
+                socket.on('disconnected', (data) => {
+                    this.messages.push({message: data.message, author: data.author});
+                });
+            },
+        });
+    </script>
+</body>
+</html>
