@@ -5,8 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css">
-    <!-- <link rel="stylesheet" href="app.css" type="text/css"> -->
+    <link rel="stylesheet" href="app.css" type="text/css">
     <title>Chat App</title>
+    <style>
+        .panel-block ul li:nth-of-type(even) {
+            background-color: lightgray;
+        }
+        .panel-block ul li:nth-of-type(odd) {
+            background-color: #dddddd;
+        }
+    </style>
 </head>
 <body>
     <div class="app">
@@ -32,11 +40,11 @@
                 </form>
             </div>
             <div class="panel-block">
-                <p><h1>Global Chat </h1></Global><span v-show="is_typing"> - <i>{{ current_typing_user }} is typing...</i></span></p>
+                <p><h1>Global Chat </h1><span v-show="is_typing"> - <i>{{ current_typing_user }} is typing...</i></span></p>
             </div>
             <div class="panel-block" style="max-height: 57vh; overflow-y: scroll">
-                <ul>
-                    <li v-for="message in messages">
+                <ul style="width: 100%">
+                    <li v-for="message in messages" style="width: 100%; padding: 0.7em 0 0.7em 0.3em">
                         <small><i>{{ message.author }}</i> -</small><strong> {{ message.message }}</strong>
                     </li>
                 </ul>
