@@ -42,7 +42,7 @@
             <div class="panel-block">
                 <p><h1>Global Chat </h1><span v-show="is_typing"> - <i>{{ current_typing_user }} is typing...</i></span></p>
             </div>
-            <div class="panel-block" style="max-height: 57vh; overflow-y: scroll">
+            <div class="panel-block" style="max-height: 65vh; overflow-y: scroll">
                 <ul style="width: 100%">
                     <li v-for="message in messages" style="width: 100%; padding: 0.7em 0 0.7em 0.3em">
                         <small><i>{{ message.author }}</i> -</small><strong> {{ message.message }}</strong>
