@@ -2,7 +2,7 @@
 
 A real basic live chat app. Written with Node.js, Socket.io and Vue.js.
 
-Steps to run:
+# Steps to run:
 
 1. Have Node.js installed.
 2. Run command `npm install`.
